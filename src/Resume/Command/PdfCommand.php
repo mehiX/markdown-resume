@@ -55,6 +55,12 @@ class PdfCommand extends HtmlCommand
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'The optional override of default filename to output to'
+            )
+            ->addOption(
+                'profile_picture',
+                'pic',
+                InputOption::VALUE_REQUIRED,
+                'A profile picture'
             );
     }
 
@@ -70,6 +76,7 @@ class PdfCommand extends HtmlCommand
         $htmlonly  = $input->getOption('htmlonly');
         $keephtml  = $input->getOption('keephtml');
         $pdfargs  = $input->getOption('pdfargs');
+        $profile_picture= $input->getOption('profile_picture');
 
         $destFilename = join(DIRECTORY_SEPARATOR, array($destination, pathinfo($source, PATHINFO_FILENAME) . '.pdf'));
 
@@ -92,7 +99,7 @@ class PdfCommand extends HtmlCommand
             return false;
         }
 
-        $rendered = $this->generateHtml($source, $template, false);
+        $rendered = $this->generateHtml($source, $template, false, $profile_picture, "right", "top");
 
         // The pdf needs some extra css rules, and so we'll add them here
         // to our html document

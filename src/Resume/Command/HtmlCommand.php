@@ -49,6 +49,12 @@ class HtmlCommand extends Command
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'The optional override of default filename to output to'
+            )
+            ->addOption(
+                'profile_picture',
+                'pic',
+                InputOption::VALUE_REQUIRED,
+                'A profile picture'
             );
     }
 
@@ -61,6 +67,7 @@ class HtmlCommand extends Command
         $template     = $input->getOption('template');
         $refresh      = $input->getOption('refresh');
         $optFilename  = $input->getOption('output');
+        $profile_picture =  $input->getOption('profile_picture');
         $destFilename = "";
 
         if ($optFilename) {
@@ -69,7 +76,7 @@ class HtmlCommand extends Command
             $destFilename = $destination . DIRECTORY_SEPARATOR . $sourceName . '.html';
         }
 
-        $rendered = $this->generateHtml($source, $template, $refresh);
+        $rendered = $this->generateHtml($source, $template, $refresh, $profile_picture, "right 20px", "top 20px");
         file_put_contents($destFilename, $rendered);
         $output->writeln(
             sprintf(
@@ -82,7 +89,7 @@ class HtmlCommand extends Command
         return true;
     }
 
-    protected function generateContent($templatePath, $contentType)
+    protected function generateContent($templatePath, $contentType, $dynamic_args)
     {
         // We build these into a single string so that we can deploy this resume as a
         // single file.
@@ -116,10 +123,13 @@ class HtmlCommand extends Command
                 break;
         }
 
-        return $collection->dump();
+        $m = new \Mustache_Engine;
+        $style = $m->render($collection->dump(), $dynamic_args);
+
+        return $style;
     }
 
-    protected function generateHtml($source, $template, $refresh)
+    protected function generateHtml($source, $template, $refresh, $profile_picture, $profile_picture_pos_x, $profile_picture_pos_y)
     {
         // Check that the source file is sane
         if (!file_exists($source)) {
@@ -143,9 +153,13 @@ class HtmlCommand extends Command
             throw new \Exception("Unable to open template file: $templateIndexPath");
         }
 
-        $style = $this->generateContent($templatePath, 'css');
+        $style = $this->generateContent($templatePath, 'css', array(
+            'profile_picture'   => $profile_picture,
+            'pos_x'             => $profile_picture_pos_x,
+            'pos_y'             => $profile_picture_pos_y
+        ));
 
-        $links = $this->generateContent($templatePath, 'links');
+        $links = $this->generateContent($templatePath, 'links', array());
 
         $templateContent = file_get_contents($templateIndexPath);
         $resumeContent   = file_get_contents($source);

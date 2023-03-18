@@ -1,0 +1,18 @@
+@pos_x: "{{pos_x}}";
+@pos_y: "{{pos_y}}";
+
+#footer {
+    display: none;
+}
+
+#footer + p {
+    width: 100%;
+    font-size: 11px;
+}
+
+.container {
+    background: no-repeat url("{{profile_picture}}");
+    background-position-x: e(%("%s", @pos_x));
+    background-position-y: e(%("%s", @pos_y));
+    background-size: auto 200px;
+}

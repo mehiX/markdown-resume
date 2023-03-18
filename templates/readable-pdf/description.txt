@@ -1,2 +1,0 @@
-Bootswatch 'readable' theme
-With css only for pdf

@@ -102,6 +102,12 @@ every two seconds via a meta tag. Open the `./examples/ouput/sample.html` file
 in your browser, and then just save your markdown document when you want to see
 a fresh preview.
 
+Adding a profile picture (for now only added to the `readable` template):
+
+```shell
+./bin/md2resume html --template readable --profile_picture photo.png test.md output/
+```
+
 ## Authoring Your Resume
 
 Markdown is limited to basic html markup. Follow the `examples/source/sample.md`
